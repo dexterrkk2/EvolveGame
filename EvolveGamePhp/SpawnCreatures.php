@@ -4,7 +4,7 @@ require 'ConnectionSettings.php';
 $numCreatures = $_POST["numCreatures"];
 //get max creatures
 $maxCreatures;
-$sql = "SELECT count(id) from creature'";
+$sql = "SELECT Count(id) from creature'";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -29,7 +29,6 @@ for(int i=0; i< $numCreatures; i++)
     //Show users
     if ($result->num_rows > 0) {
         // output data of each row
-        
         $rows = array();
         while($row = $result->fetch_assoc()) {
         $rows[] = $row;

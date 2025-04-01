@@ -11,7 +11,6 @@ if ($conn->connect_error) {
 //Show users
 if ($result->num_rows > 0) {
     // output data of each row
-    
     $rows = array();
     while($row = $result->fetch_assoc()) {
       $rows[] = $row;

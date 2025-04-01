@@ -464,7 +464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usernameInput: {fileID: 757076139}
   passwordInput: {fileID: 2100451577}
-  loginButton: {fileID: 0}
+  loginButton: {fileID: 194371766}
 --- !u!114 &680978582
 MonoBehaviour:
   m_ObjectHideFlags: 0
