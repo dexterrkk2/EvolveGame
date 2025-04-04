@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -28,13 +29,17 @@ public class Web : MonoBehaviour
     }
     public void getCreature(System.Action<string> CallBack, string creatureId)
     {
-        StartCoroutine(GetItemIds("http://localhost/EvolveGame/GetCreature.php", creatureId, CallBack, false));
+        StartCoroutine(GetCreatureId("http://localhost/EvolveGame/GetCreature.php", creatureId, CallBack));
         //StartCoroutine(GetItemIds("http://evolvegame.iceiy.com/getitem.php", itemId, CallBack, false));
     }
     public void sellItem( string userId, string itemId, string inventoryID)
     {
         StartCoroutine(SellItem("http://localhost/UnityBackendTutorial/SellItem.php",userId, itemId, inventoryID));
         //StartCoroutine(SellItem("http://evolvegame.iceiy.com/SellItem.php", userId, itemId, inventoryID));
+    }
+    public void getCreatureFromPlayer(string userID, Action<string> callback )
+    {
+        StartCoroutine(GetplayersCreature("http://localhost/EvolveGame/getCreaturesFromUser.php", userID, callback));
     }
     public void getUsers()
     {
@@ -166,7 +171,40 @@ public class Web : MonoBehaviour
     {
         Debug.Log("got creatures");
         WWWForm form = new WWWForm();
-        form.AddField("id", creature);
+        form.AddField("creatureID", creature);
+        //Debug.Log(userID);
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
+        {
+            //aeonwebRequest(webRequest);
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    Debug.Log(webRequest.downloadHandler.text);
+                    string jsonArray = webRequest.downloadHandler.text;
+                    CallBack(jsonArray);
+                    break;
+            }
+        }
+    }
+    IEnumerator GetplayersCreature(string uri, string user, System.Action<string> CallBack)
+    {
+        Debug.Log("got creatures");
+        WWWForm form = new WWWForm();
+        form.AddField("userID", user);
         //Debug.Log(userID);
         using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
         {
