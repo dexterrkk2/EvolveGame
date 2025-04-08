@@ -1,8 +1,6 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "unity backend tutorial";
+require 'ConnectionSettings.php';
+
 
 //variables submitted
 $loginUser = $_POST["loginUser"];
