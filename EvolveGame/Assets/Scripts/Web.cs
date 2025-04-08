@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 
 public class Web : MonoBehaviour
 {
+    //public creatureUI test;
     void Start()
     {
         getDate();

@@ -22,6 +22,14 @@ public class Creature
         Genes = genes;
         this.survivalNum = survivalNum;
     }
+    public Creature(string name, int health, int damage, float attackSpeed, float moveSpeed)
+    {
+        this.name = name;
+        this.health = health;
+        this.damage = damage;
+        this.attackSpeed = attackSpeed;
+        this.moveSpeed = moveSpeed;
+    }
     public Creature(JSONObject jason)
     {
         //Debug.Log(jason);

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class CreatureManager : MonoBehaviour
 {
     Action<string> createCreatureCallback;
+    public GameObject creatureUiObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +51,9 @@ public class CreatureManager : MonoBehaviour
             //GameObject creatureObject = Instantiate(Resources.Load("Prefabs/item") as GameObject);
             Creature creature = new Creature(itemInfoJson);
             creature.DebugStats();
+            GameObject uiObject = Instantiate(creatureUiObject, transform);
+            creatureUI creatureUI = uiObject.GetComponent<creatureUI>();
+            creatureUI.Create(creature);
             //creature.ItemID = creatureID;
             //item.ID = inventoryID;
 /*
