@@ -17,7 +17,7 @@ public class CreatureManager : MonoBehaviour
     public Transform opponentSpawnPoint;
     public Transform playerSpawnPoint;
     public bool isOpponent = true;
-    public int maxCreatureNum;
+    public static int maxCreatureNum;
     // Start is called before the first frame update
     void OnEnable()
     {

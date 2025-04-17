@@ -6,12 +6,13 @@ public class RegisterAccount : MonoBehaviour
 {
     public InputField usernameInput;
     public InputField passwordInput;
+    public InputField displayName;
     public InputField confirmPassword;
     public Button registerButton;
     // Start is called before the first frame update
     void Start()
     {
-        registerButton.onClick.AddListener(() => Main.instance.web.registerUser(usernameInput.text, passwordInput.text, confirmPassword.text));
+        registerButton.onClick.AddListener(() => Main.instance.web.registerUser(usernameInput.text, displayName.text, passwordInput.text, confirmPassword.text));
     }
 
     // Update is called once per frame

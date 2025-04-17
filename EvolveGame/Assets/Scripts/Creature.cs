@@ -27,7 +27,7 @@ public class Creature
         this.genes = genes;
         this.survivalNum = survivalNum;
     }
-    public Creature(string name, int health, int damage, float attackSpeed, float moveSpeed, string id)
+    public Creature(string name, int health, int damage, float attackSpeed, float moveSpeed, string id, int population, string diet)
     {
         this.name = name;
         this.health = health;
@@ -35,6 +35,8 @@ public class Creature
         this.attackSpeed = attackSpeed;
         this.moveSpeed = moveSpeed;
         this.id = id;
+        this.population = population;
+        this.diet = diet;
     }
     public Creature(JSONObject jason)
     {

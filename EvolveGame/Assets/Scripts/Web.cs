@@ -59,11 +59,19 @@ public class Web : MonoBehaviour
         //StartCoroutine(GetRequest("http://evolvegame.iceiy.com/getDate.php"));
 
     }
-    public void registerUser(string username, string password, string confirmPassword)
+    public void createCreatur(string creatureName, string creatureDiet)
+    {
+        StartCoroutine(createCreature(creatureName, creatureDiet, "http://localhost/EvolveGame/createCreature.php"));
+    }
+    public void registerUser(string username, string displayName, string password,string confirmPassword)
     {
         if (password == confirmPassword)
         {
-            StartCoroutine(login(username, password, "http://localhost/EvolveGame/RegisterUser.php"));
+            StartCoroutine(register(username, password,displayName, "http://localhost/EvolveGame/RegisterUser.php"));
+        }
+        else if(username == displayName)
+        {
+            Debug.Log("usernmame cannot be display name");
         }
         else
         {
@@ -326,6 +334,74 @@ public class Web : MonoBehaviour
                     //LoginCorrect
                     Main.instance.userProfile.SetActive(true);
                     Main.instance.login.gameObject.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("try again");
+                }
+            }
+        }
+    }
+    IEnumerator createCreature(string creaturename, string diet, string url)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("creatureName", creaturename);
+        form.AddField("CreatureDiet", diet);
+        using (UnityWebRequest www = UnityWebRequest.Post(url, form))
+        {
+            //aeonwebRequest(www);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                //Callback Function to get resulrs
+                string id = www.downloadHandler.text;
+                //Main.instance.userInfo.setInfo(id, creaturename, diet);
+                if (id != "wrong creditinals" && id != "user does not exit")
+                {
+                    //LoginCorrect
+                    Main.instance.userProfile.SetActive(true);
+                    Main.instance.createCreatureScreen.gameObject.SetActive(false);
+                    //assign creature to user could be in other script
+                }
+                else
+                {
+                    Debug.Log("try again");
+                }
+            }
+        }
+    }
+    IEnumerator register(string username, string password, string displayName, string url)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("loginUser", username);
+        form.AddField("loginPass", password);
+        form.AddField("displayName", displayName);
+        using (UnityWebRequest www = UnityWebRequest.Post(url, form))
+        {
+            //aeonwebRequest(www);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                //Callback Function to get resulrs
+                string id = www.downloadHandler.text;
+                Main.instance.userInfo.setInfo(id, username, password);
+                if (id != "wrong creditinals" && id != "user does not exit")
+                {
+                    //start new creature creation
+                    Main.instance.createCreatureScreen.gameObject.SetActive(true);
+                    Main.instance.registerAccount.gameObject.SetActive(false);
                 }
                 else
                 {

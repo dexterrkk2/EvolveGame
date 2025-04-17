@@ -8,7 +8,10 @@ public class Main : MonoBehaviour
     public Web web;
     public UserInfo userInfo;
     public Login login;
+    public RegisterAccount registerAccount;
+    public CreatureManager creatureManager;
     public GameObject userProfile;
+    public GameObject createCreatureScreen;
     // Start is called before the first frame update
     void Start()
     {
