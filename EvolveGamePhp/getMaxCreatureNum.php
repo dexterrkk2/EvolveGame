@@ -1,9 +1,8 @@
 <?php
 require 'ConnectionSettings.php';
 
-$creatureID = $_POST["creatureID"];
 // Check connection
-$sql = "SELECT * from creature where id ='" .$creatureID ."'";
+$sql = "SELECT Count(*) from creature";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);

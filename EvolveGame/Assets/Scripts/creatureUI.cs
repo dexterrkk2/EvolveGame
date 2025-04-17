@@ -22,7 +22,6 @@ public class creatureUI : MonoBehaviour
         creatureHealth.text = "Health: " + creature.health;
         creatureAttackSpeed.text = "AttackSpeed: " + creature.attackSpeed;
         creatureMoveSpeed.text = "MoveSpeed: " + creature.moveSpeed;
-        //ddefine load creatue behaviour
     }
 
     // Update is called once per frame

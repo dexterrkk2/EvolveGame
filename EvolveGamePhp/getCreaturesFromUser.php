@@ -1,9 +1,9 @@
 <?php
 require 'ConnectionSettings.php';
 
-$creatureID = $_POST["creatureID"];
+$userID = $_POST["userID"];
 // Check connection
-$sql = "SELECT * from creature where id ='" .$creatureID ."'";
+$sql = "SELECT CreaturID from creatortable where PlayerID ='" .$userID ."'";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);

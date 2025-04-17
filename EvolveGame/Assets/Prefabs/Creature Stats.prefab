@@ -215,7 +215,7 @@ MonoBehaviour:
   creatureHealth: {fileID: 6492555195358917187}
   creatureAttackSpeed: {fileID: 49435351408151021}
   creatureMoveSpeed: {fileID: 1492089771572039490}
-  loadCreature: {fileID: 0}
+  loadCreature: {fileID: 8593453216770063909}
 --- !u!1 &2540760055430608762
 GameObject:
   m_ObjectHideFlags: 0

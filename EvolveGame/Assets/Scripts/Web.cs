@@ -53,6 +53,12 @@ public class Web : MonoBehaviour
         //StartCoroutine(GetRequest("http://evolvegame.iceiy.com/getDate.php"));
 
     }
+    public void getMaxNum(System.Action<string> CallBack)
+    {
+        StartCoroutine(GetCreatureNum("http://localhost/EvolveGame/getMaxCreatureNum.php",CallBack));
+        //StartCoroutine(GetRequest("http://evolvegame.iceiy.com/getDate.php"));
+
+    }
     public void registerUser(string username, string password, string confirmPassword)
     {
         if (password == confirmPassword)
@@ -128,6 +134,34 @@ public class Web : MonoBehaviour
             }
         }
     }
+    IEnumerator GetCreatureNum(string uri, System.Action<string> CallBack)
+    {
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            //aeonwebRequest(webRequest);
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    Debug.Log(webRequest.downloadHandler.text);
+                    CallBack(webRequest.downloadHandler.text);
+                    break;
+            }
+        }
+    }
     IEnumerator GetItemIds(string uri, string userID, System.Action<string> CallBack, bool items)
     {
         Debug.Log("got items");
@@ -172,6 +206,7 @@ public class Web : MonoBehaviour
     {
         Debug.Log("got creatures");
         WWWForm form = new WWWForm();
+        Debug.Log("Creature " +creature);
         form.AddField("creatureID", creature);
         //Debug.Log(userID);
         using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))

@@ -1,7 +1,6 @@
 <?php
 require 'ConnectionSettings.php';
 
-
 //variables submitted
 $loginUser = $_POST["loginUser"];
 $loginPass = $_POST["loginPass"];
@@ -9,7 +8,7 @@ $loginPass = $_POST["loginPass"];
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
-$sql = "SELECT password, id from users where username ='" .$loginUser ."'";
+$sql = "SELECT password, id from playertable where username ='" .$loginUser ."'";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
