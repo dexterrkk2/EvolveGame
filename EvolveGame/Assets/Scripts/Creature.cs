@@ -11,6 +11,7 @@ public class Creature
     public string id;
     public string diet;
     public int health;
+    public int startingHealth;
     public int damage;
     public int population;
     public float attackSpeed;
@@ -21,6 +22,7 @@ public class Creature
     {
         this.name = name;
         this.health = health;
+        startingHealth = health;
         this.damage = damage;
         this.attackSpeed = attackSpeed;
         this.moveSpeed = moveSpeed;
@@ -43,6 +45,7 @@ public class Creature
         //Debug.Log(jason);
         name = jason["name"];
         health = jason["Health"];
+        startingHealth = health;
         damage = jason["Damage"];
         attackSpeed = jason["AttackSpeed"];
         moveSpeed = jason["MoveSpeed"];
@@ -64,6 +67,10 @@ public class Creature
     public void addGene(Gene gene)
     {
         genes.Add(gene);
+    }
+    public void reset()
+    {
+        health = startingHealth;
     }
     public int getDamage() { return damage; }
     public float getAttackSpeed() { return attackSpeed; }

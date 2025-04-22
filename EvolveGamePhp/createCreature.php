@@ -23,8 +23,24 @@ if ($result->num_rows > 0) {
   } else {
     echo "creating creature";
     //insert creature
-    $sql2 = "INSERT INTO creature (name, Damage, Health, Diet, AttackSpeed, MoveSpeed, Population) VALUES ('" .$creatureName . "',1,5, '" . $diet ."',1,1,5)";
+    $sql2 = "INSERT INTO creature (name, Damage, Health, Diet, AttackSpeed, MoveSpeed, Population) VALUES ('" .$creatureName . "',1,5, '" . $diet ."',1,2,5)";
     if ($conn->query($sql2) === TRUE) {
+        $sql = "SELECT id from creature where name ='" .$creatureName ."'";
+        $result = $conn->query($sql);
+
+        while($row = $result->fetch_assoc()) 
+        {
+            $creatureID = $row["id"];
+            //get user data
+    
+            //get player info
+    
+            //get inventory
+    
+            //modify player data
+    
+            //update inventory
+        }
         echo "New creature created successfully";
         $sql3 = "INSERT INTO creatortable (PlayerID,CreaturID) VALUES ('" .$userid. "', '" . $creatureID ."')";
         if ($conn->query($sql3) === TRUE) 
@@ -39,6 +55,5 @@ if ($result->num_rows > 0) {
         echo "Error: " . $sql2 . "<br>" . $conn->error;
       }
   }
- 
   $conn->close();
 ?>

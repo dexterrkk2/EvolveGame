@@ -9,7 +9,7 @@ public class CreatureManager : MonoBehaviour
 {
     Action<string> createCreatureCallback;
     Action<string> CreatureNumCallback;
-    Action<string> spawnCreatureCallback;
+    Action<string> spawnSelfCallback;
     Action<string> spawnOpponentCallback;
     public GameObject creatureUiObject;
     public GameObject creaturePrefab;
@@ -31,7 +31,7 @@ public class CreatureManager : MonoBehaviour
         {
             getCreatureNum(jsonarray);
         };
-        spawnCreatureCallback = (jsonarray) =>
+        spawnSelfCallback = (jsonarray) =>
         {
             StartCoroutine(spawnCreature(jsonarray));
         };
@@ -39,8 +39,8 @@ public class CreatureManager : MonoBehaviour
         { 
             StartCoroutine(nextRound(jsonarray));
         };
-        createCreature();
         Main.instance.web.getMaxNum(CreatureNumCallback);
+        createCreature();
     }
     private void OnDisable()
     {
@@ -72,8 +72,8 @@ public class CreatureManager : MonoBehaviour
         }
         string randomID = randomCreature.ToString();
         Debug.Log("random Creature" + randomID);
-        Main.instance.web.getCreature(spawnCreatureCallback, randomID);
-        Main.instance.web.getCreature(spawnCreatureCallback, id);
+        Main.instance.web.getCreature(spawnSelfCallback, id);
+        Main.instance.web.getCreature(spawnOpponentCallback, randomID);
     }
     public void spawnEnemy(string id)
     {
@@ -110,28 +110,18 @@ public class CreatureManager : MonoBehaviour
             Main.instance.web.getCreature(getItemInfoCallback, creatureID);
             yield return new WaitUntil(() => isdone == true);
             Creature creature = new Creature(itemInfoJson);
+            //get creatures genes and apply them
             creature.DebugStats();
             Debug.Log("isOpponent: " + isOpponent);
             GameObject me;
-            if (isOpponent)
-            {
-                isOpponent = false;
-                me = Instantiate(creaturePrefab, opponentSpawnPoint);
-                Beast spawnedCreature = me.GetComponent<Beast>();
-                spawnedCreature.create(creature);
-                battleRunner.addOpponent(spawnedCreature);
-            }
-            else
-            {
-                me = Instantiate(creaturePrefab, playerSpawnPoint);
-                Beast spawnedCreature = me.GetComponent<Beast>();
-                spawnedCreature.create(creature);
-                battleRunner.addPlayer(spawnedCreature);
-                isOpponent = true;
-            }
+            me = Instantiate(creaturePrefab, playerSpawnPoint);
+            Beast spawnedCreature = me.GetComponent<Beast>();
+            spawnedCreature.create(creature);
+            battleRunner.addPlayer(spawnedCreature);
+            isOpponent = true;
         }
-        yield return new WaitUntil(() => isOpponent == true);
-        battleRunner.Create();
+        //yield return new WaitUntil(() => isOpponent == true);
+        //battleRunner.Create();
     }
     IEnumerator nextRound(string jsonString)
     {
@@ -156,18 +146,18 @@ public class CreatureManager : MonoBehaviour
             yield return new WaitUntil(() => isdone == true);
             Creature creature = new Creature(itemInfoJson);
             creature.DebugStats();
+            //get creatures genes and apply them
+
             Debug.Log("isOpponent: " + isOpponent);
             GameObject me;
-            if (isOpponent)
-            {
-                isOpponent = false;
-                me = Instantiate(creaturePrefab, opponentSpawnPoint);
-                Beast spawnedCreature = me.GetComponent<Beast>();
-                spawnedCreature.create(creature);
-                battleRunner.addOpponent(spawnedCreature);
-            }
+       
+            isOpponent = false;
+            me = Instantiate(creaturePrefab, opponentSpawnPoint);
+            Beast spawnedCreature = me.GetComponent<Beast>();
+            spawnedCreature.create(creature);
+            battleRunner.addOpponent(spawnedCreature);
         }
-        //yield return new WaitUntil(() => isOpponent == false);
+        yield return new WaitUntil(() => battleRunner.hasBoth());
         isOpponent = true;
         battleRunner.Create();
     }
@@ -198,6 +188,7 @@ public class CreatureManager : MonoBehaviour
             //GameObject creatureObject = Instantiate(Resources.Load("Prefabs/item") as GameObject);
             Creature creature = new Creature(itemInfoJson);
             creature.DebugStats();
+            //get creatures genes and apply them
             GameObject uiObject = Instantiate(creatureUiObject, transform);
             creatureUIList.Add(uiObject);
             creatureUI creatureUI = uiObject.GetComponent<creatureUI>();

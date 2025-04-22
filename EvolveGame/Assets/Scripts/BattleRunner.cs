@@ -38,6 +38,14 @@ public class BattleRunner : MonoBehaviour
             winGame();
         }
     }
+    public bool hasBoth()
+    {
+        if (playerBeast && opponentBeast)
+        {
+            return true;
+        }
+        return false;
+    }
     void winGame()
     {
         playerBeast.onWin();

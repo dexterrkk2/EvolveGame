@@ -85,10 +85,10 @@ public class GeneManager : MonoBehaviour
             geneUIList.Add(uiObject);
             GeneUI geneUI = uiObject.GetComponent<GeneUI>();
             geneUI.Create(gene);
-            geneUI.acceptGene.onClick.AddListener(() => Main.instance.userProfile.SetActive(true));
             geneUI.acceptGene.onClick.AddListener(() => gene.modifyCreature(creature));
             geneUI.acceptGene.onClick.AddListener(() => runner.geneScreen.gameObject.SetActive(false));
             geneUI.acceptGene.onClick.AddListener(() => Main.instance.creatureManager.spawnEnemy(creature.id));
+            //add gene to creature
         }
     }
     // Update is called once per frame
