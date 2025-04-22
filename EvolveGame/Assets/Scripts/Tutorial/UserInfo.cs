@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class UserInfo : MonoBehaviour
 {
     string userID;
@@ -14,6 +14,10 @@ public class UserInfo : MonoBehaviour
         this.userID = userId;
         this.userName = username;
         this.password = userpassword;
+    }
+    public void setId(string id)
+    {
+        userID = id;
     }
     public string getUserID()
     {

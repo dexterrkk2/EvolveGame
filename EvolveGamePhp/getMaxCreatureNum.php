@@ -2,7 +2,7 @@
 require 'ConnectionSettings.php';
 
 // Check connection
-$sql = "SELECT Count(*) from creature";
+$sql = "SELECT Max(id) from creature";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);

@@ -1,9 +1,8 @@
 <?php
 require 'ConnectionSettings.php';
 
-$userID = $_POST["userID"];
 // Check connection
-$sql = "SELECT CreaturID from creatortable where PlayerID ='" .$userID ."'";
+$sql = "SELECT Max(id) from genes";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);

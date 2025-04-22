@@ -6,9 +6,10 @@ public class BattleRunner : MonoBehaviour
 {
     Beast playerBeast;
     Beast opponentBeast;
+    GeneManager geneManager;
     public float turnTime;
     public GameObject creatureManager;
-    public GameObject winScreen;
+    public GameObject geneScreen;
     public GameObject loseScreen;
     // Start is called before the first frame update
     public void Create()
@@ -40,15 +41,20 @@ public class BattleRunner : MonoBehaviour
     void winGame()
     {
         playerBeast.onWin();
-        playerBeast.gameObject.SetActive(false);
-        winScreen.SetActive(true);
+        opponentBeast.gameObject.SetActive(false);
+        geneScreen.SetActive(true);
         CancelInvoke();
         Debug.Log("You have won");
+    }
+    public Creature getPlayerCreature()
+    {
+        return playerBeast.getCreature();
     }
     void loseGame()
     {
         opponentBeast.onWin();
         opponentBeast.gameObject.SetActive(false);
+        playerBeast.gameObject.SetActive(false);
         loseScreen.SetActive(true);
         CancelInvoke();
         Debug.Log("You have died");

@@ -1,3 +1,4 @@
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,6 +34,11 @@ public class Web : MonoBehaviour
         StartCoroutine(GetCreatureId("http://localhost/EvolveGame/GetCreature.php", creatureId, CallBack));
         //StartCoroutine(GetItemIds("http://evolvegame.iceiy.com/getitem.php", itemId, CallBack, false));
     }
+    public void getGene(System.Action<string> CallBack, string geneId)
+    {
+        StartCoroutine(GetGen("http://localhost/EvolveGame/getGene.php", geneId, CallBack));
+        //StartCoroutine(GetItemIds("http://evolvegame.iceiy.com/getitem.php", itemId, CallBack, false));
+    }
     public void sellItem( string userId, string itemId, string inventoryID)
     {
         StartCoroutine(SellItem("http://localhost/UnityBackendTutorial/SellItem.php",userId, itemId, inventoryID));
@@ -59,9 +65,14 @@ public class Web : MonoBehaviour
         //StartCoroutine(GetRequest("http://evolvegame.iceiy.com/getDate.php"));
 
     }
-    public void createCreatur(string creatureName, string creatureDiet)
+    public void getGeneNum(System.Action<string> CallBack)
     {
-        StartCoroutine(createCreature(creatureName, creatureDiet, "http://localhost/EvolveGame/createCreature.php"));
+        StartCoroutine(GetGeneNum("http://localhost/EvolveGame/getMaxGeneNum.php", CallBack));
+        //StartCoroutine(GetRequest("http://evolvegame.iceiy.com/getDate.php"));
+    }
+    public void createCreatur(string creatureName, string creatureDiet, string userID, string creatureID)
+    {
+        StartCoroutine(createCreature(creatureName, creatureDiet, userID, creatureID, "http://localhost/EvolveGame/createCreature.php"));
     }
     public void registerUser(string username, string displayName, string password,string confirmPassword)
     {
@@ -170,6 +181,33 @@ public class Web : MonoBehaviour
             }
         }
     }
+    IEnumerator GetGeneNum(string uri, System.Action<string> CallBack)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            //aeonwebRequest(webRequest);
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    Debug.Log(webRequest.downloadHandler.text);
+                    CallBack(webRequest.downloadHandler.text);
+                    break;
+            }
+        }
+    }
     IEnumerator GetItemIds(string uri, string userID, System.Action<string> CallBack, bool items)
     {
         Debug.Log("got items");
@@ -244,6 +282,40 @@ public class Web : MonoBehaviour
             }
         }
     }
+    IEnumerator GetGen(string uri, string geneID, System.Action<string> CallBack)
+    {
+        Debug.Log("got creatures");
+        WWWForm form = new WWWForm();
+        Debug.Log("Gene " + geneID);
+        form.AddField("id", geneID);
+        //Debug.Log(userID);
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
+        {
+            //aeonwebRequest(webRequest);
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    Debug.Log(webRequest.downloadHandler.text);
+                    string jsonArray = webRequest.downloadHandler.text;
+                    CallBack(jsonArray);
+                    break;
+            }
+        }
+    }
     IEnumerator GetplayersCreature(string uri, string user, System.Action<string> CallBack)
     {
         Debug.Log("got creatures");
@@ -272,7 +344,15 @@ public class Web : MonoBehaviour
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     Debug.Log(webRequest.downloadHandler.text);
                     string jsonArray = webRequest.downloadHandler.text;
-                    CallBack(jsonArray);
+                    Debug.Log(jsonArray);
+                    if (jsonArray == "0 creatures")
+                    {
+                        Main.instance.createCreatureScreen.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        CallBack(jsonArray);
+                    }
                     break;
             }
         }
@@ -342,11 +422,13 @@ public class Web : MonoBehaviour
             }
         }
     }
-    IEnumerator createCreature(string creaturename, string diet, string url)
+    IEnumerator createCreature(string creaturename, string diet, string userId, string creatureID, string url)
     {
         WWWForm form = new WWWForm();
         form.AddField("creatureName", creaturename);
         form.AddField("CreatureDiet", diet);
+        form.AddField("PlayerID", userId);
+        form.AddField("CreaturID", creatureID);
         using (UnityWebRequest www = UnityWebRequest.Post(url, form))
         {
             //aeonwebRequest(www);
@@ -362,10 +444,13 @@ public class Web : MonoBehaviour
                 //Callback Function to get resulrs
                 string id = www.downloadHandler.text;
                 //Main.instance.userInfo.setInfo(id, creaturename, diet);
-                if (id != "wrong creditinals" && id != "user does not exit")
+                if (id != "wrong creditinals" && id != "user does not exit" && id != "creature already taken")
                 {
+                    id = creatureID;
                     //LoginCorrect
+
                     Main.instance.userProfile.SetActive(true);
+                    //Main.instance.userInfo.setId(id);
                     Main.instance.createCreatureScreen.gameObject.SetActive(false);
                     //assign creature to user could be in other script
                 }
@@ -400,8 +485,10 @@ public class Web : MonoBehaviour
                 if (id != "wrong creditinals" && id != "user does not exit")
                 {
                     //start new creature creation
+                    //loginCall(username, password);
                     Main.instance.createCreatureScreen.gameObject.SetActive(true);
                     Main.instance.registerAccount.gameObject.SetActive(false);
+                    Main.instance.userProfile.gameObject.SetActive(false);
                 }
                 else
                 {
