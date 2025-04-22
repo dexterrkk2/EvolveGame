@@ -79,6 +79,7 @@ public class Creature
     public void Die()
     {
         population--;
+        //update creature population on sql
     }
     public void onWin()
     {

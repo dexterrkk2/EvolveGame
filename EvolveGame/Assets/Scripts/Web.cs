@@ -89,6 +89,10 @@ public class Web : MonoBehaviour
             Debug.Log("Passwords must match");
         }
     }
+    public void giveGene(string creatureid, string geneID)
+    {
+        StartCoroutine(AddGene(geneID, creatureid, "http://localhost/EvolveGame/AddGeneToCreature.php"));
+    }
     public void loginCall(string username, string password)
     {
         StartCoroutine(login(username, password, "http://localhost/EvolveGame/login.php"));
@@ -452,6 +456,43 @@ public class Web : MonoBehaviour
                     Main.instance.userProfile.SetActive(true);
                     //Main.instance.userInfo.setId(id);
                     Main.instance.createCreatureScreen.gameObject.SetActive(false);
+                    //assign creature to user could be in other script
+                }
+                else
+                {
+                    Debug.Log("did not add");
+                }
+            }
+        }
+    }
+    IEnumerator AddGene(string geneId, string creatureID, string url)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("CreaturID", creatureID);
+        form.AddField("geneID", geneId);
+        using (UnityWebRequest www = UnityWebRequest.Post(url, form))
+        {
+            //aeonwebRequest(www);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+                //Callback Function to get resulrs
+                string id = www.downloadHandler.text;
+                //Main.instance.userInfo.setInfo(id, creaturename, diet);
+                if (id != "wrong creditinals" && id != "user does not exit" && id != "did not give gene")
+                {
+                    //id = creatureID;
+                    //LoginCorrect
+                    Debug.Log("worked");
+                    //Main.instance.userProfile.SetActive(true);
+                    //Main.instance.userInfo.setId(id);
+                    //Main.instance.createCreatureScreen.gameObject.SetActive(false);
                     //assign creature to user could be in other script
                 }
                 else
