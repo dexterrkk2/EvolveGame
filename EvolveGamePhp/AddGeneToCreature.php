@@ -7,7 +7,7 @@ $creatureID = $_POST["CreaturID"];
 // Create connection
 
 // Check connection
-$sql = "INSERT INTO creaturesgenes (Creature ID, Gene id) VALUES ('" .$geneID . "','" . $creatureID ."')";
+$sql = "INSERT INTO creaturesgenes (CreatureID, Geneid, onOFF) VALUES ('" .$creatureID . "','" . $geneID ."', true)";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);

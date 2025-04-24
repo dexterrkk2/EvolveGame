@@ -102,17 +102,17 @@ public class CreatureManager : MonoBehaviour
             Action<string> getItemInfoCallback = (itemInfo) =>
             {
                 isdone = true;
-                Debug.Log(itemInfo);
+                //Debug.Log(itemInfo);
                 JSONArray tempArray = JSON.Parse(itemInfo) as JSONArray;
                 itemInfoJson = tempArray[0].AsObject;
-                Debug.Log(itemInfoJson);
+                //Debug.Log(itemInfoJson);
             };
             Main.instance.web.getCreature(getItemInfoCallback, creatureID);
             yield return new WaitUntil(() => isdone == true);
             Creature creature = new Creature(itemInfoJson);
             //get creatures genes and apply them
             creature.DebugStats();
-            Debug.Log("isOpponent: " + isOpponent);
+            //Debug.Log("isOpponent: " + isOpponent);
             GameObject me;
             me = Instantiate(creaturePrefab, playerSpawnPoint);
             Beast spawnedCreature = me.GetComponent<Beast>();

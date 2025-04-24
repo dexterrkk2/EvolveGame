@@ -28,15 +28,16 @@ public class BattleRunner : MonoBehaviour
     void runTurn()
     {
         playerBeast.attackCreature(opponentBeast);
+        if (opponentBeast.isDead())
+        {
+            winGame();
+        }
         opponentBeast.attackCreature(playerBeast);
         if (playerBeast.isDead())
         {
             loseGame();
         }
-        if (opponentBeast.isDead())
-        {
-            winGame();
-        }
+       
     }
     public bool hasBoth()
     {

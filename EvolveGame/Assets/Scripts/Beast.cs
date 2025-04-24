@@ -49,11 +49,11 @@ public class Beast : MonoBehaviour
     public void getImage()
     {
         GameObject imageObject = Resources.Load("sprites/" + creature.name) as GameObject;
-        Debug.Log(imageObject);
+        //Debug.Log(imageObject);
         if (!imageObject)
         {
             imageObject = Resources.Load("sprites/Troll") as GameObject;
-            Debug.Log(imageObject);
+            //Debug.Log(imageObject);
         }
         SpriteRenderer spriteRenderer = imageObject.GetComponent<SpriteRenderer>();
         Sprite sprite = spriteRenderer.sprite;
