@@ -22,8 +22,23 @@ public class creatureUI : MonoBehaviour
         creatureHealth.text = "Health: " + creature.health;
         creatureAttackSpeed.text = "AttackSpeed: " + creature.attackSpeed;
         creatureMoveSpeed.text = "MoveSpeed: " + creature.moveSpeed;
+        getImage();
     }
-
+    public void getImage()
+    {
+        string path = "sprites/" + creatureName.text;
+        Debug.Log(path);
+        GameObject imageObject = Resources.Load(path) as GameObject;
+        Debug.Log(imageObject);
+        if (!imageObject)
+        {
+            imageObject = Resources.Load("sprites/Troll") as GameObject;
+            Debug.Log(imageObject);
+        }
+        SpriteRenderer spriteRenderer = imageObject.GetComponent<SpriteRenderer>();
+        Sprite sprite = spriteRenderer.sprite;
+        creatureimage.sprite = sprite;
+    }
     // Update is called once per frame
     void Update()
     {

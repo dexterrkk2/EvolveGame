@@ -280,9 +280,19 @@ public class Web : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     Debug.Log(webRequest.downloadHandler.text);
-                    string jsonArray = webRequest.downloadHandler.text;
-                    CallBack(jsonArray);
-                    break;
+                    if (webRequest.downloadHandler.text != "0 creatures")
+                    {
+                        string jsonArray = webRequest.downloadHandler.text;
+                        CallBack(jsonArray);
+                        break;
+                    }
+                    else
+                    {
+                        int id = int.Parse(creature) +1;
+                        string newID = id + "";
+                        getCreature(CallBack, newID);
+                        break;
+                    }
             }
         }
     }

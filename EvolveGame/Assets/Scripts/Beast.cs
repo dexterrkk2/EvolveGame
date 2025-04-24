@@ -19,6 +19,7 @@ public class Beast : MonoBehaviour
         health.maxValue = creature.health;
         health.value = creature.health;
         creatureNameText.text = creature.name;
+        getImage();
     }
     public void attackCreature(Beast beast)
     {
@@ -44,6 +45,19 @@ public class Beast : MonoBehaviour
             creature.Die();
             gameObject.SetActive(false);
         }
+    }
+    public void getImage()
+    {
+        GameObject imageObject = Resources.Load("sprites/" + creature.name) as GameObject;
+        Debug.Log(imageObject);
+        if (!imageObject)
+        {
+            imageObject = Resources.Load("sprites/Troll") as GameObject;
+            Debug.Log(imageObject);
+        }
+        SpriteRenderer spriteRenderer = imageObject.GetComponent<SpriteRenderer>();
+        Sprite sprite = spriteRenderer.sprite;
+        creatureImage.sprite = sprite;
     }
     public Creature getCreature() { return this.creature; }
     public void onWin()

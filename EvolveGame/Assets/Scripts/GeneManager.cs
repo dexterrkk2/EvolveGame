@@ -86,7 +86,8 @@ public class GeneManager : MonoBehaviour
             GeneUI geneUI = uiObject.GetComponent<GeneUI>();
             geneUI.Create(gene);
             geneUI.acceptGene.onClick.AddListener(() => gene.modifyCreature(creature));
-            geneUI.acceptGene.onClick.AddListener(() => Main.instance.web.giveGene(creature.id, gene.id));
+            //geneUI.acceptGene.onClick.AddListener(() => Main.instance.web.giveGene(creature.id, gene.id));
+            geneUI.acceptGene.onClick.AddListener(() => Main.instance.userProfile.SetActive(true));
             geneUI.acceptGene.onClick.AddListener(() => runner.geneScreen.gameObject.SetActive(false));
             geneUI.acceptGene.onClick.AddListener(() => Main.instance.creatureManager.spawnEnemy(creature.id));
             

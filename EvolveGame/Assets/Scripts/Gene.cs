@@ -47,6 +47,7 @@ public class Gene
         else if(effectType == "health")
         {
             creature.health += amount;
+            creature.startingHealth += amount;
         }
         else if (effectType == "attackspeed")
         {
