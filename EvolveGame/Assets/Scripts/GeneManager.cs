@@ -40,6 +40,10 @@ public class GeneManager : MonoBehaviour
             Destroy(geneUIList[i]);
         }
     }
+    public void applyCreaturegenes(string genes, Creature creature)
+    {
+        StartCoroutine(getGeneRountine(genes, creature));
+    }
     public void CreatReandomGene()
     {
         int randomCreature = UnityEngine.Random.Range(1, maxGeneNum + 1);
@@ -91,7 +95,36 @@ public class GeneManager : MonoBehaviour
             geneUI.acceptGene.onClick.AddListener(() => runner.geneScreen.gameObject.SetActive(false));
             geneUI.acceptGene.onClick.AddListener(() => Main.instance.creatureManager.spawnEnemy(creature.id));
             
-            //add gene to creature
+        }
+    }
+    IEnumerator getGeneRountine(string jsonString, Creature creature)
+    {
+        JSONArray jsonArray = JSON.Parse(jsonString) as JSONArray;
+        Debug.Log(jsonArray.Count);
+        for (int i = 0; i < jsonArray.Count; i++)
+        {
+            bool isdone = false;
+            string GeneID = jsonArray[i].AsObject["id"];
+            //string inventoryID = jsonArray[i].AsObject["ID"];
+            JSONObject itemInfoJson = new JSONObject();
+
+            Action<string> getItemInfoCallback = (itemInfo) =>
+            {
+                isdone = true;
+                Debug.Log(itemInfo);
+                JSONArray tempArray = JSON.Parse(itemInfo) as JSONArray;
+                itemInfoJson = tempArray[0].AsObject;
+                Debug.Log(itemInfoJson);
+            };
+            Main.instance.web.getGene(getItemInfoCallback, GeneID);
+
+            //wait for callback
+            yield return new WaitUntil(() => isdone == true);
+            Debug.Log("got here");
+            //GameObject creatureObject = Instantiate(Resources.Load("Prefabs/item") as GameObject);
+            Gene gene = new Gene(itemInfoJson);
+            //gene.DebugStats();
+            gene.modifyCreature(creature);
         }
     }
     // Update is called once per frame

@@ -15,6 +15,7 @@ public class CreatureManager : MonoBehaviour
     public GameObject creaturePrefab;
     public List<GameObject> creatureUIList;
     public BattleRunner battleRunner;
+    public GeneManager geneManager;
     public Transform opponentSpawnPoint;
     public Transform playerSpawnPoint;
     public bool isOpponent = true;
@@ -189,8 +190,18 @@ public class CreatureManager : MonoBehaviour
             Creature creature = new Creature(itemInfoJson);
             creature.DebugStats();
             //get creatures genes and apply them
+            isdone = false;
+            Action<string> getgenesCallback = (itemInfo) =>
+            {
+               geneManager.applyCreaturegenes(itemInfo, creature);
+            };
+            Main.instance.web.getGenesFromCreature(creatureID, getgenesCallback);
+            yield return new WaitUntil(() => isdone == true);
+           
+            //wait for callback
+            yield return new WaitUntil(() => isdone == true);
             GameObject uiObject = Instantiate(creatureUiObject, transform);
-            creatureUIList.Add(uiObject);
+             creatureUIList.Add(uiObject);
             creatureUI creatureUI = uiObject.GetComponent<creatureUI>();
             creatureUI.Create(creature);
             creatureUI.loadCreature.onClick.AddListener(() => spawnRandomCreature(creature.id));
