@@ -12,13 +12,14 @@ public class BattleRunner : MonoBehaviour
     public GameObject creatureManager;
     public GameObject geneScreen;
     public GameObject loseScreen;
+    public GameObject canvas;
     public Text log;
     // Start is called before the first frame update
     public void Create()
     {
         InvokeRepeating("runTurn", 1, turnTime);
         creatureManager.SetActive(false);
-        log.gameObject.SetActive(true);
+        canvas.SetActive(true);
     }
     public void addPlayer(Beast beast)
     {
@@ -30,15 +31,15 @@ public class BattleRunner : MonoBehaviour
     }
     void runTurn()
     {
-        Invoke("runOpponent", turnTime);
-        Invoke("runPlayer", turnTime * 2);
+        runOpponent();
+        Invoke("runPlayer", turnTime);
     }
     public void runOpponent()
     {
         log.text = playerBeast.attackCreature(opponentBeast);
         if (opponentBeast.isDead())
         {
-            log.gameObject.SetActive(false);
+            canvas.SetActive(false);
             winGame();
         }
     }
@@ -47,7 +48,7 @@ public class BattleRunner : MonoBehaviour
         log.text = opponentBeast.attackCreature(playerBeast);
         if (playerBeast.isDead())
         {
-            log.gameObject.SetActive(false);
+            canvas.SetActive(false);
             loseGame();
         }
     }
