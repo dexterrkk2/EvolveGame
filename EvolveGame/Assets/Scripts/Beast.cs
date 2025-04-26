@@ -21,18 +21,18 @@ public class Beast : MonoBehaviour
         creatureNameText.text = creature.name;
         getImage();
     }
-    public void attackCreature(Beast beast)
+    public string attackCreature(Beast beast)
     {
         float hitChance = beast.creature.moveSpeed / creature.attackSpeed;
         int rand = Random.Range(0, (int)hitChance) + 1;
         if (rand == 1)
         {
-            Debug.Log(name + "hit enemy");
             beast.takeDamage(creature.damage);
+            return (creature.name + " hit " + beast.creature.name);
         }
         else
         {
-            Debug.Log(name + "missed enemy");
+            return (creature.name + " missed " + beast.creature.name);
         }
     }
 

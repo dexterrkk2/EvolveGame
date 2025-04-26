@@ -190,13 +190,14 @@ public class CreatureManager : MonoBehaviour
             Creature creature = new Creature(itemInfoJson);
             creature.DebugStats();
             //get creatures genes and apply them
-            isdone = false;
-            Action<string> getgenesCallback = (itemInfo) =>
+            //isdone = false;
+            /*Action<string> getgenesCallback = (itemInfo) =>
             {
                geneManager.applyCreaturegenes(itemInfo, creature);
+
             };
             Main.instance.web.getGenesFromCreature(creatureID, getgenesCallback);
-            yield return new WaitUntil(() => isdone == true);
+            yield return new WaitUntil(() => isdone == true);*/
            
             //wait for callback
             yield return new WaitUntil(() => isdone == true);

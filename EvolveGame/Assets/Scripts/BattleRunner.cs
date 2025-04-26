@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleRunner : MonoBehaviour
 {
@@ -11,11 +12,13 @@ public class BattleRunner : MonoBehaviour
     public GameObject creatureManager;
     public GameObject geneScreen;
     public GameObject loseScreen;
+    public Text log;
     // Start is called before the first frame update
     public void Create()
     {
         InvokeRepeating("runTurn", 1, turnTime);
         creatureManager.SetActive(false);
+        log.gameObject.SetActive(true);
     }
     public void addPlayer(Beast beast)
     {
@@ -27,17 +30,26 @@ public class BattleRunner : MonoBehaviour
     }
     void runTurn()
     {
-        playerBeast.attackCreature(opponentBeast);
+        Invoke("runOpponent", turnTime);
+        Invoke("runPlayer", turnTime * 2);
+    }
+    public void runOpponent()
+    {
+        log.text = playerBeast.attackCreature(opponentBeast);
         if (opponentBeast.isDead())
         {
+            log.gameObject.SetActive(false);
             winGame();
         }
-        opponentBeast.attackCreature(playerBeast);
+    }
+    public void runPlayer()
+    {
+        log.text = opponentBeast.attackCreature(playerBeast);
         if (playerBeast.isDead())
         {
+            log.gameObject.SetActive(false);
             loseGame();
         }
-       
     }
     public bool hasBoth()
     {
