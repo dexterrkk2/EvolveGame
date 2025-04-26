@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class creatureUI : MonoBehaviour
 {
+    public Creature creature;
     public Image creatureimage;
     public Text creatureName;
     public Text creatureDamage;
@@ -17,6 +18,12 @@ public class creatureUI : MonoBehaviour
     public void Create(Creature creature)
     {
         //define get image
+        this.creature = creature;
+        creature.DebugStats();
+        Invoke("Refresh", 1);
+    }
+    public void Refresh()
+    {
         creatureName.text = creature.name;
         creatureDamage.text = "Damage: " + creature.damage;
         creatureHealth.text = "Health: " + creature.health;

@@ -17,9 +17,9 @@ public class BattleRunner : MonoBehaviour
     // Start is called before the first frame update
     public void Create()
     {
-        InvokeRepeating("runTurn", 1, turnTime);
+        InvokeRepeating("runTurn", turnTime, turnTime);
         creatureManager.SetActive(false);
-        canvas.SetActive(true);
+        canvas.gameObject.SetActive(true);
     }
     public void addPlayer(Beast beast)
     {
@@ -31,6 +31,7 @@ public class BattleRunner : MonoBehaviour
     }
     void runTurn()
     {
+        Main.instance.turnOFFGenes();
         runOpponent();
         Invoke("runPlayer", turnTime);
     }
@@ -48,13 +49,29 @@ public class BattleRunner : MonoBehaviour
         log.text = opponentBeast.attackCreature(playerBeast);
         if (playerBeast.isDead())
         {
-            canvas.SetActive(false);
+            canvas.gameObject.SetActive(false);
             loseGame();
         }
     }
     public bool hasBoth()
     {
-        if (playerBeast && opponentBeast)
+        if (hasPlayer() && hasOpponent())
+        {
+            return true;
+        }
+        return false;
+    }
+    public bool hasPlayer()
+    {
+        if (playerBeast)
+        {
+            return true;
+        }
+       return false;
+    }
+    public bool hasOpponent()
+    {
+        if (opponentBeast)
         {
             return true;
         }
@@ -62,10 +79,11 @@ public class BattleRunner : MonoBehaviour
     }
     void winGame()
     {
+        CancelInvoke();
         playerBeast.onWin();
         opponentBeast.gameObject.SetActive(false);
-        geneScreen.SetActive(true);
-        CancelInvoke();
+        opponentBeast = null;
+        Main.instance.turnOnGenes();
         Debug.Log("You have won");
     }
     public Creature getPlayerCreature()
@@ -74,11 +92,11 @@ public class BattleRunner : MonoBehaviour
     }
     void loseGame()
     {
+        CancelInvoke();
         opponentBeast.onWin();
         opponentBeast.gameObject.SetActive(false);
         playerBeast.gameObject.SetActive(false);
         loseScreen.SetActive(true);
-        CancelInvoke();
         Debug.Log("You have died");
     }
     // Update is called once per frame

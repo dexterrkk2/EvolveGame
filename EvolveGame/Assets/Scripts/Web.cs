@@ -50,7 +50,7 @@ public class Web : MonoBehaviour
     }
     public void getGenesFromCreature(string creatureID, Action<string> callback)
     {
-        StartCoroutine(GetplayersCreature("http://localhost/EvolveGame/getCreaturesFromUser.php", creatureID, callback));
+        StartCoroutine(GetCreaturesGenes("http://localhost/EvolveGame/getGenesFromCreature.php", creatureID, callback));
     }
     public void getUsers()
     {
@@ -374,46 +374,44 @@ public class Web : MonoBehaviour
                     break;
             }
         }
-        IEnumerator GetCreaturesGenes(string uri, string creatureID, System.Action<string> CallBack)
+        
+    }
+    IEnumerator GetCreaturesGenes(string uri, string creatureID, System.Action<string> CallBack)
+    {
+        Debug.Log("got genes");
+        WWWForm form = new WWWForm();
+        form.AddField("creatureID", creatureID);
+        //Debug.Log(userID);
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
         {
-            Debug.Log("got genes");
-            WWWForm form = new WWWForm();
-            form.AddField("creatureID", creatureID);
-            //Debug.Log(userID);
-            using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
+            //aeonwebRequest(webRequest);
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
             {
-                //aeonwebRequest(webRequest);
-                // Request and wait for the desired page.
-                yield return webRequest.SendWebRequest();
-
-                string[] pages = uri.Split('/');
-                int page = pages.Length - 1;
-
-                switch (webRequest.result)
-                {
-                    case UnityWebRequest.Result.ConnectionError:
-                    case UnityWebRequest.Result.DataProcessingError:
-                        Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                        break;
-                    case UnityWebRequest.Result.ProtocolError:
-                        Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                        break;
-                    case UnityWebRequest.Result.Success:
-                        Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                        //Debug.Log(webRequest.downloadHandler.text);
-                        string jsonArray = webRequest.downloadHandler.text;
-                        Debug.Log(jsonArray);
-                        if (jsonArray == "0 genes")
-                        {
-                            Debug.Log("zero genes");
-                            //Main.instance.createCreatureScreen.gameObject.SetActive(true);
-                        }
-                        else
-                        {
-                            CallBack(jsonArray);
-                        }
-                        break;
-                }
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    //Debug.Log(webRequest.downloadHandler.text);
+                    string jsonArray = webRequest.downloadHandler.text;
+                    Debug.Log(jsonArray);
+                    if (jsonArray == "0 genes")
+                    {
+                        Debug.Log("zero genes");
+                        //Main.instance.createCreatureScreen.gameObject.SetActive(true);
+                    }
+                    CallBack(jsonArray);
+                    break;
             }
         }
     }

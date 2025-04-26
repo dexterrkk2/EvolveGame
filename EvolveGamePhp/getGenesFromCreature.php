@@ -3,7 +3,7 @@ require 'ConnectionSettings.php';
 
 $creatureID = $_POST["creatureID"];
 // Check connection
-$sql = "SELECT Geneid from creaturesgenes where CreaturID ='" .$creatureID ."'";
+$sql = "SELECT Geneid from creaturesgenes where CreatureID ='" .$creatureID ."'";
 $result = $conn->query($sql);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);

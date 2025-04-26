@@ -173,9 +173,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   creatureUiObject: {fileID: 2135226598415424002, guid: b33aa9d99fdae0a40a49cf2d32e3033b, type: 3}
   creaturePrefab: {fileID: 410770726316801472, guid: dea497e7c3d3cef478c32a9fdbb1b4d8, type: 3}
+  geneManagerObject: {fileID: 1981089155}
   creatureUIList: []
   battleRunner: {fileID: 1385208774}
-  geneManager: {fileID: 0}
+  geneManager: {fileID: 43687977}
   opponentSpawnPoint: {fileID: 160817525}
   playerSpawnPoint: {fileID: 1413816351}
   isOpponent: 1
@@ -258,6 +259,7 @@ MonoBehaviour:
   geneUiObject: {fileID: 2135226598415424002, guid: 506042d8436aa22419e200378548018a, type: 3}
   genePrefab: {fileID: 0}
   geneUIList: []
+  appliedGenes: 0
 --- !u!114 &43687978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1783,6 +1785,8 @@ MonoBehaviour:
   login: {fileID: 576077911}
   registerAccount: {fileID: 1743387419}
   creatureManager: {fileID: 17226559}
+  geneManagerObject: {fileID: 1981089155}
+  geneTtitle: {fileID: 2132580748}
   userProfile: {fileID: 146240593}
   createCreatureScreen: {fileID: 699489383}
 --- !u!1 &699489383

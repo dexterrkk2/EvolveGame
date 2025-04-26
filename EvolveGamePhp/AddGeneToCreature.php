@@ -5,10 +5,16 @@ require 'ConnectionSettings.php';
 $geneID = $_POST["geneID"];
 $creatureID = $_POST["CreaturID"];
 // Create connection
-
+$sql1 = "Select * from creaturesgenes where CreatureID ='" .$creatureID . "'and Geneid ='" . $geneID ."'";
+$result = $conn->query($sql1);
+if ($result->num_rows > 0) {
+  //tell user that name is already taken
+  echo "creature already taken";
+  
+} else {
 // Check connection
-$sql = "INSERT INTO creaturesgenes (CreatureID, Geneid, onOFF) VALUES ('" .$creatureID . "','" . $geneID ."', true)";
-$result = $conn->query($sql);
+$sql2 = "INSERT INTO creaturesgenes (CreatureID, Geneid, onOFF) VALUES ('" .$creatureID . "','" . $geneID ."', true)";
+$result = $conn->query($sql2);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
@@ -20,5 +26,6 @@ if ($conn->query($sql2) === TRUE) {
   } else {
     echo "did not give gene";
   }
+}
   $conn->close();
 ?>

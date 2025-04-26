@@ -2,6 +2,7 @@ using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ public class CreatureManager : MonoBehaviour
     Action<string> spawnOpponentCallback;
     public GameObject creatureUiObject;
     public GameObject creaturePrefab;
+    public GameObject geneManagerObject;
     public List<GameObject> creatureUIList;
     public BattleRunner battleRunner;
     public GeneManager geneManager;
@@ -112,6 +114,14 @@ public class CreatureManager : MonoBehaviour
             yield return new WaitUntil(() => isdone == true);
             Creature creature = new Creature(itemInfoJson);
             //get creatures genes and apply them
+            Action<string> getgenesCallback = (itemInfo) =>
+            {
+                geneManagerObject.SetActive(true);
+                geneManager.applyCreaturegenes(itemInfo, creature);
+
+            };
+            Main.instance.web.getGenesFromCreature(creatureID, getgenesCallback);
+            yield return new WaitUntil(() => geneManager.AppliedGenes());
             creature.DebugStats();
             //Debug.Log("isOpponent: " + isOpponent);
             GameObject me;
@@ -146,9 +156,16 @@ public class CreatureManager : MonoBehaviour
             Main.instance.web.getCreature(getItemInfoCallback, creatureID);
             yield return new WaitUntil(() => isdone == true);
             Creature creature = new Creature(itemInfoJson);
-            creature.DebugStats();
+            //creature.DebugStats();
             //get creatures genes and apply them
+            Action<string> getgenesCallback = (itemInfo) =>
+            {
+                geneManagerObject.SetActive(true);
+                geneManager.applyCreaturegenes(itemInfo, creature);
 
+            };
+            Main.instance.web.getGenesFromCreature(creatureID, getgenesCallback);
+            yield return new WaitUntil(() => geneManager.AppliedGenes());
             Debug.Log("isOpponent: " + isOpponent);
             GameObject me;
        
@@ -160,6 +177,7 @@ public class CreatureManager : MonoBehaviour
         }
         yield return new WaitUntil(() => battleRunner.hasBoth());
         isOpponent = true;
+        Main.instance.turnOFFGenes();
         battleRunner.Create();
     }
     IEnumerator CreateCreaturesRountine(string jsonString)
@@ -188,24 +206,25 @@ public class CreatureManager : MonoBehaviour
             //Debug.Log("got here");
             //GameObject creatureObject = Instantiate(Resources.Load("Prefabs/item") as GameObject);
             Creature creature = new Creature(itemInfoJson);
-            creature.DebugStats();
+            //creature.DebugStats();
             //get creatures genes and apply them
-            //isdone = false;
-            /*Action<string> getgenesCallback = (itemInfo) =>
+            isdone = false;
+            Action<string> getgenesCallback = (itemInfo) =>
             {
-               geneManager.applyCreaturegenes(itemInfo, creature);
-
+                geneManagerObject.SetActive(true);
+                geneManager.applyCreaturegenes(itemInfo, creature);
+               
             };
             Main.instance.web.getGenesFromCreature(creatureID, getgenesCallback);
-            yield return new WaitUntil(() => isdone == true);*/
-           
             //wait for callback
-            yield return new WaitUntil(() => isdone == true);
+            yield return new WaitUntil(() => geneManager.AppliedGenes());
             GameObject uiObject = Instantiate(creatureUiObject, transform);
-             creatureUIList.Add(uiObject);
+            creatureUIList.Add(uiObject);
             creatureUI creatureUI = uiObject.GetComponent<creatureUI>();
             creatureUI.Create(creature);
             creatureUI.loadCreature.onClick.AddListener(() => spawnRandomCreature(creature.id));
+            Main.instance.turnOFFGenes();
+
         }
     }
 }

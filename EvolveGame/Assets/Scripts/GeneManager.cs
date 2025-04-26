@@ -14,6 +14,7 @@ public class GeneManager : MonoBehaviour
     public GameObject genePrefab;
     public List<GameObject> geneUIList;
     public static int maxGeneNum;
+    public bool appliedGenes = false;
     // Start is called before the first frame update
     public void OnEnable()
     {
@@ -28,7 +29,14 @@ public class GeneManager : MonoBehaviour
         };
         creategeneCallback = (string jsonstring) =>
         {
-            StartCoroutine(CreateGeneRountine(jsonstring, runner.getPlayerCreature()));
+            if (!runner.hasOpponent())
+            {
+                StartCoroutine(CreateGeneRountine(jsonstring, runner.getPlayerCreature()));
+            }
+            else
+            {
+                Debug.Log("No player");
+            }
         };
         Main.instance.web.getGeneNum(geneNumCallback);
        
@@ -100,33 +108,46 @@ public class GeneManager : MonoBehaviour
     IEnumerator getGeneRountine(string jsonString, Creature creature)
     {
         JSONArray jsonArray = JSON.Parse(jsonString) as JSONArray;
-        Debug.Log(jsonArray.Count);
-        for (int i = 0; i < jsonArray.Count; i++)
-        {
-            bool isdone = false;
-            string GeneID = jsonArray[i].AsObject["id"];
-            //string inventoryID = jsonArray[i].AsObject["ID"];
-            JSONObject itemInfoJson = new JSONObject();
-
-            Action<string> getItemInfoCallback = (itemInfo) =>
-            {
-                isdone = true;
-                Debug.Log(itemInfo);
-                JSONArray tempArray = JSON.Parse(itemInfo) as JSONArray;
-                itemInfoJson = tempArray[0].AsObject;
-                Debug.Log(itemInfoJson);
-            };
-            Main.instance.web.getGene(getItemInfoCallback, GeneID);
-
-            //wait for callback
-            yield return new WaitUntil(() => isdone == true);
-            Debug.Log("got here");
-            //GameObject creatureObject = Instantiate(Resources.Load("Prefabs/item") as GameObject);
-            Gene gene = new Gene(itemInfoJson);
-            //gene.DebugStats();
-            gene.modifyCreature(creature);
+        //Debug.Log(jsonArray.Count);
+        if (jsonArray == null || jsonArray.Count == 0) 
+        { 
+            Debug.Log("skipped creature" + creature.name); 
         }
+        else
+        {
+            appliedGenes = false;
+            Debug.Log("Num Genes" + jsonArray.Count);
+            Debug.Log("fires elemnt" + jsonArray[0].ToString());
+            for (int i = 0; i < jsonArray.Count; i++)
+            {
+                bool isdone = false;
+                string GeneID = jsonArray[i].AsObject["Geneid"];
+                Debug.Log("GeneID:" + GeneID);
+                //string inventoryID = jsonArray[i].AsObject["ID"];
+                JSONObject itemInfoJson = new JSONObject();
+
+                Action<string> getItemInfoCallback = (itemInfo) =>
+                {
+                    isdone = true;
+                    Debug.Log(itemInfo);
+                    JSONArray tempArray = JSON.Parse(itemInfo) as JSONArray;
+                    itemInfoJson = tempArray[0].AsObject;
+                    Debug.Log(itemInfoJson);
+                };
+                Main.instance.web.getGene(getItemInfoCallback, GeneID);
+
+                //wait for callback
+                yield return new WaitUntil(() => isdone == true);
+                Debug.Log("got here");
+                //GameObject creatureObject = Instantiate(Resources.Load("Prefabs/item") as GameObject);
+                Gene gene = new Gene(itemInfoJson);
+                gene.DebugStats();
+                gene.modifyCreature(creature);
+            }
+        }
+        appliedGenes = true;
     }
+    public bool AppliedGenes() {  return appliedGenes; }
     // Update is called once per frame
     void Update()
     {
